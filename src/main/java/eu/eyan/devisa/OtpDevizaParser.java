@@ -1,22 +1,31 @@
 package eu.eyan.devisa;
 
-import static com.google.common.collect.Lists.*;
+import static eu.eyan.devisa.OtpDevizaParser.Valuta.*;
+import static eu.eyan.devisa.OtpDevizaParser.ÉrtékTípus.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
+
+import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 
+import eu.eyan.mail.SendMailTLS;
+
 public class OtpDevizaParser {
+
+	private static final SimpleDateFormat DÁTUM_FORMÁTUM_NAP = new SimpleDateFormat("MMMM dd", new Locale("hu"));
+	private static final SimpleDateFormat DÁTUM_FORMÁTUM_PERC = new SimpleDateFormat("yyyy.MMMM.dd HH:mm", new Locale("hu"));
+	private static final String FT = " Ft";
+	private static final String BR = System.lineSeparator();
 
 	public enum ÉrtékTípus {
 		Egység, Közép, Valuta_vételi, Valuta_eladási, Csekk_vételi, Csekk_eladási, Deviza_vételi, Deviza_eladási;
-		
-		public int getNumber(){
-			return newArrayList(ÉrtékTípus.values()).indexOf(this);
-		}
 	}
 
 	public enum Valuta {
@@ -32,7 +41,7 @@ public class OtpDevizaParser {
 		String devizaAdatok = getDevizaAdatokHtml(tábla, valuta);
 		devizaAdatok = devizaAdatok.replaceAll("\\s", "").replaceAll("<tdclass=\"num\">", "");
 		String[] adatok = devizaAdatok.split("</td>");
-		String adatSzöveg = adatok[értékTípus.getNumber()];
+		String adatSzöveg = adatok[értékTípus.ordinal()];
 		return Float.parseFloat(adatSzöveg.replace(",", "."));
 	}
 
@@ -71,4 +80,27 @@ public class OtpDevizaParser {
 		}
 		return otpDevizaOldalHtml;
 	}
+	
+	public static void main(String args[])
+	{
+		final String username = System.getenv("GMAIL_USER");
+		final String password = System.getenv("GMAIL_PASS");
+		final String from = System.getenv("GMAIL_FROM");
+		final String to = System.getenv("GMAIL_TO");
+		String subject = EUR + " " + getValue(EUR, Közép) + FT + " - " + DÁTUM_FORMÁTUM_NAP.format(new Date());
+		String body    = new StringBuilder("Otp " + EUR + "" + BR + BR)
+								   .append("Közép:          " + getValue(EUR, Közép) + FT + BR + BR)
+								   .append("Deviza_vételi:  " + getValue(EUR, Deviza_vételi) + FT + BR + BR)
+								   .append("Deviza_eladási: " + getValue(EUR, Deviza_eladási) + FT + BR + BR)
+								   .append(BR + BR)
+								   .append(DÁTUM_FORMÁTUM_PERC.format(new Date()))
+								   .toString();
+		try {
+			SendMailTLS.send(username, password, from, to, subject, body);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }
