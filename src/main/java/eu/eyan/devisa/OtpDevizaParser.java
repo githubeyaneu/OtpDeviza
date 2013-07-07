@@ -96,6 +96,7 @@ public class OtpDevizaParser {
 								   .append(DÁTUM_FORMÁTUM_PERC.format(new Date()))
 								   .toString();
 		try {
+			System.out.println("LOG: send email: " + username + BR + "  " + password + BR + "  " + from + BR + "  " + to + BR + "  " + subject + BR + "  " + body);
 			SendMailTLS.send(username, password, from, to, subject, body);
 		} catch (MessagingException e) {
 			e.printStackTrace();
