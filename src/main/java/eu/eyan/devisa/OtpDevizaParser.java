@@ -8,6 +8,7 @@ import static java.util.TimeZone.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +26,10 @@ public class OtpDevizaParser {
 
 	private static final SimpleDateFormat DÁTUM_FORMÁTUM_NAP = new SimpleDateFormat("MMMM dd", new Locale("hu"));
 	private static final SimpleDateFormat DÁTUM_FORMÁTUM_PERC = new SimpleDateFormat("yyyy.MMMM.dd HH:mm", new Locale("hu"));
+	{
+		DÁTUM_FORMÁTUM_NAP.setTimeZone(getTimeZone("Europe/Berlin"));
+		DÁTUM_FORMÁTUM_PERC.setTimeZone(getTimeZone("Europe/Berlin"));
+	}
 	private static final String FT = " Ft";
 	private static final String BR = System.lineSeparator();
 
@@ -92,9 +97,7 @@ public class OtpDevizaParser {
 		final String from = System.getenv("GMAIL_FROM");
 		final String to = System.getenv("GMAIL_TO");
 
-		logInfo("Helyi időzóna: " + TimeZone.getDefault());
-		logInfo("Helyi idő: " + new Date());
-		Date mostBerlinben = Calendar.getInstance(getTimeZone("Europe/Berlin")).getTime();
+		Date most = new Date();
 		
 		boolean sikerült = false;
 		int próbálkozás = 0;
@@ -120,13 +123,13 @@ public class OtpDevizaParser {
 			throw new RuntimeException("Nem sikerült meghatározni az euróárfolyamot!");
 		}
 		
-		String subject = EUR + " " + euróKözép + FT + " - " + DÁTUM_FORMÁTUM_NAP.format(mostBerlinben);
+		String subject = EUR + " " + euróKözép + FT + " - " + DÁTUM_FORMÁTUM_NAP.format(most);
 		String body    = new StringBuilder("Otp " + EUR + "" + BR + BR)
 								   .append("Közép:          " + euróKözép + FT + BR + BR)
 								   .append("Deviza_vételi:  " + euróVételi + FT + BR + BR)
 								   .append("Deviza_eladási: " + euróEladási + FT + BR + BR)
 								   .append(BR + BR)
-								   .append(DÁTUM_FORMÁTUM_PERC.format(mostBerlinben))
+								   .append(DÁTUM_FORMÁTUM_PERC.format(most))
 								   .toString();
 		try {
 			logInfo("Email küldése:" + BR
