@@ -23,7 +23,10 @@ public class OtpDevizaParser {
 
 	private static final SimpleDateFormat DÁTUM_FORMÁTUM_NAP = new SimpleDateFormat("MMMM dd", new Locale("hu"));
 	private static final SimpleDateFormat DÁTUM_FORMÁTUM_PERC = new SimpleDateFormat("yyyy.MMMM.dd HH:mm", new Locale("hu"));
-
+	{
+		DÁTUM_FORMÁTUM_NAP.setTimeZone(getTimeZone("Europe/Berlin"));
+		DÁTUM_FORMÁTUM_PERC.setTimeZone(getTimeZone("Europe/Berlin"));
+	}
 	private static final String FT = " Ft";
 	private static final String BR = System.lineSeparator();
 
@@ -86,9 +89,6 @@ public class OtpDevizaParser {
 	
 	public static void main(String args[])
 	{
-		DÁTUM_FORMÁTUM_NAP.setTimeZone(getTimeZone("Europe/Berlin"));
-		DÁTUM_FORMÁTUM_PERC.setTimeZone(getTimeZone("Europe/Berlin"));
-		
 		final String username = System.getenv("GMAIL_USER");
 		final String password = System.getenv("GMAIL_PASS");
 		final String from = System.getenv("GMAIL_FROM");
