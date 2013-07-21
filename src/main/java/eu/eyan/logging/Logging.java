@@ -1,16 +1,16 @@
-package eu.eyan.logging;
+Ôªøpackage eu.eyan.logging;
 
 public class Logging {
-	public static void logInfo(String ¸zenet) {
+	public static void logInfo(String √ºzenet) {
 		System.err.flush();
 		pause();
-		System.out.println("LOG: " + ¸zenet);
+		System.out.println("LOG: " + √ºzenet);
 	}
 
-	public static void logError(String hiba‹zenet, Exception... e) {
+	public static void logError(String hiba√úzenet, Exception... e) {
 		System.out.flush();
 		pause();
-		System.err.println("HIBA: " + (hiba‹zenet == null ? "" : hiba‹zenet));
+		System.err.println("HIBA: " + (hiba√úzenet == null ? "" : hiba√úzenet));
 		for (Exception exception : e) {
 			exception.printStackTrace();
 		}
@@ -24,7 +24,7 @@ public class Logging {
 	private static void pause(long millis) {
 		try {
 			Thread.sleep(millis);
-		} catch (InterruptedException e) { /* nem tˆrpÈnik semmi */
+		} catch (InterruptedException e) { /* nem t√∂rp√©nik semmi */
 		}
 	}
 

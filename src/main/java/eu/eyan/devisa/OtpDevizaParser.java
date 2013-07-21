@@ -1,4 +1,4 @@
-package eu.eyan.devisa;
+﻿package eu.eyan.devisa;
 
 import static eu.eyan.devisa.OtpDevizaParser.Valuta.*;
 import static eu.eyan.devisa.OtpDevizaParser.ÉrtékTípus.*;
