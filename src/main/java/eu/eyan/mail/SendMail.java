@@ -10,9 +10,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class SendMailTLS {
+public class SendMail {
 
-	public static void send(final String username, final String password, String from, String to, String subject, String body) throws MessagingException {
+	public static void send_Gmail_TLS(final String username, final String password, String from, String to, String subject, String body) throws MessagingException {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");

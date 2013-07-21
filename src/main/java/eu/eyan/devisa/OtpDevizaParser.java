@@ -2,20 +2,24 @@ package eu.eyan.devisa;
 
 import static eu.eyan.devisa.OtpDevizaParser.Valuta.*;
 import static eu.eyan.devisa.OtpDevizaParser.ÉrtékTípus.*;
+import static eu.eyan.logging.Logging.*;
+import static java.util.TimeZone.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
 
-import eu.eyan.mail.SendMailTLS;
+import eu.eyan.mail.SendMail;
 
 public class OtpDevizaParser {
 
@@ -87,21 +91,54 @@ public class OtpDevizaParser {
 		final String password = System.getenv("GMAIL_PASS");
 		final String from = System.getenv("GMAIL_FROM");
 		final String to = System.getenv("GMAIL_TO");
-		String subject = EUR + " " + getValue(EUR, Közép) + FT + " - " + DÁTUM_FORMÁTUM_NAP.format(new Date());
+
+		logInfo("Helyi időzóna: " + TimeZone.getDefault());
+		logInfo("Helyi idő: " + new Date());
+		Date mostBerlinben = Calendar.getInstance(getTimeZone("Europe/Berlin")).getTime();
+		
+		boolean sikerült = false;
+		int próbálkozás = 0;
+		int MAX_PRÓBÁLKOZÁS = 3;
+		float euróEladási = -1;
+		float euróVételi = -1;
+		float euróKözép = -1;
+		while (!sikerült && ++próbálkozás <= MAX_PRÓBÁLKOZÁS)
+		{
+			try {
+				logInfo(próbálkozás + ". próbálkozás: ");
+				euróKözép = getValue(EUR, Közép);
+				euróVételi = getValue(EUR, Deviza_vételi);
+				euróEladási = getValue(EUR, Deviza_eladási);
+				logInfo(euróKözép + " " + euróVételi + " " + euróEladási);
+				sikerült = true;
+			} catch (Exception e) {
+				logError("Sikertelen: ", e);
+				otpDevizaOldalHtml = null;
+			}
+		}
+		if(!sikerült) {
+			throw new RuntimeException("Nem sikerült meghatározni az euróárfolyamot!");
+		}
+		
+		String subject = EUR + " " + euróKözép + FT + " - " + DÁTUM_FORMÁTUM_NAP.format(mostBerlinben);
 		String body    = new StringBuilder("Otp " + EUR + "" + BR + BR)
-								   .append("Közép:          " + getValue(EUR, Közép) + FT + BR + BR)
-								   .append("Deviza_vételi:  " + getValue(EUR, Deviza_vételi) + FT + BR + BR)
-								   .append("Deviza_eladási: " + getValue(EUR, Deviza_eladási) + FT + BR + BR)
+								   .append("Közép:          " + euróKözép + FT + BR + BR)
+								   .append("Deviza_vételi:  " + euróVételi + FT + BR + BR)
+								   .append("Deviza_eladási: " + euróEladási + FT + BR + BR)
 								   .append(BR + BR)
-								   .append(DÁTUM_FORMÁTUM_PERC.format(new Date()))
+								   .append(DÁTUM_FORMÁTUM_PERC.format(mostBerlinben))
 								   .toString();
 		try {
-			System.out.println("LOG: send email: " + username + BR + "  " + password + BR + "  " + from + BR + "  " + to + BR + "  " + subject + BR + "  " + body);
-			SendMailTLS.send(username, password, from, to, subject, body);
+			logInfo("Email küldése:" + BR
+					+ "  " + username + BR 
+					+ "  " + password + BR 
+					+ "  " + from + BR 
+					+ "  " + to + BR 
+					+ "  " + subject + BR 
+					+ "  " + body);
+			SendMail.send_Gmail_TLS(username, password, from, to, subject, body);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
 }
