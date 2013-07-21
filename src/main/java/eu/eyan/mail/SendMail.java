@@ -1,4 +1,4 @@
-﻿package eu.eyan.mail;
+package eu.eyan.mail;
 
 import java.util.Properties;
 

@@ -1,4 +1,4 @@
-﻿package eu.eyan.logging;
+package eu.eyan.logging;
 
 public class Logging {
 	public static void logInfo(String üzenet) {
