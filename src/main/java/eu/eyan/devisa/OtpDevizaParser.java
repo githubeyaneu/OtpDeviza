@@ -8,13 +8,10 @@ import static java.util.TimeZone.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.TimeZone;
 
 import javax.mail.MessagingException;
 
