@@ -45,7 +45,7 @@ public class OtpDevizaParser {
 	public static float getValue(Valuta valuta, ÉrtékTípus értékTípus) {
 		String tábla = getTáblaHtml(getOtpDevizaOldalHtml());
 		String devizaAdatok = getDevizaAdatokHtml(tábla, valuta);
-		devizaAdatok = devizaAdatok.replaceAll("\\s", "").replaceAll("<tdclass=\"num\">", "");
+		devizaAdatok = devizaAdatok.replaceAll("\\s", "").replaceAll("<td>", "");
 		String[] adatok = devizaAdatok.split("</td>");
 		String adatSzöveg = adatok[értékTípus.ordinal()];
 		return Float.parseFloat(adatSzöveg.replace(",", "."));
@@ -61,7 +61,7 @@ public class OtpDevizaParser {
 	}
 
 	private static String getTáblaHtml(String page) {
-		int táblaEleje = page.indexOf("<table cellspacing=\"0\" cellpadding=\"0\" summary=\"\" class=\"appdata\" style=\"width: 721px; margin-left: 0;\">");
+		int táblaEleje = page.indexOf("<table cellspacing=\"0\" cellpadding=\"0\">");
 		String táblától = page.substring(táblaEleje);
 		int táblaVége = táblától.indexOf("</table>");
 		String tábla = táblától.substring(0, táblaVége);
