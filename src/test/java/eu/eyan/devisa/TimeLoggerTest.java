@@ -38,6 +38,9 @@ public class TimeLoggerTest {
 		Logging.logInfo("");
 		Logging.logInfo("Timezone: " + timeZone.getID());
 		Logging.logInfo("  Date: " + date);
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.setTimeZone(timeZone);
+		Logging.logInfo("  Date: " + sdf.format(date));
 		Logging.logInfo("Formatted time: " + dateFormat.getTimeZone().getID());
 		Logging.logInfo("  Formatted Date: " + dateFormat.format(date));
 	}
