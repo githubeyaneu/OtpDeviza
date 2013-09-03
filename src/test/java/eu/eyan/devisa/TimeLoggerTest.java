@@ -16,7 +16,8 @@ public class TimeLoggerTest {
 	@Test
 	public void testTime() {
 		
-		SimpleDateFormat DÁTUM_FORMÁTUM_PERC = new SimpleDateFormat("yyyy.MMMM.dd HH:mm", new Locale("hu"));
+		SimpleDateFormat DÁTUM_FORMÁTUM_PERC = new SimpleDateFormat("yyyy.MMMM.dd HH:mm", new Locale("hu", "HU"));
+		DÁTUM_FORMÁTUM_PERC.setTimeZone(getTimeZone("Europe/Berlin"));
 
 		Date now = new Date();
 		Logging.logInfo("Date: " + now);
