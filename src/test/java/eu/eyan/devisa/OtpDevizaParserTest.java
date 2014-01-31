@@ -9,7 +9,7 @@ import eu.eyan.devisa.OtpDevizaParser.ÉrtékTípus;
 
 public class OtpDevizaParserTest {
 
-	private static final int FELSŐ_HATÁR = 310;
+	private static final int FELSŐ_HATÁR = 315;
 	private static final int ALSÓ_HATÁR = 250;
 
 	@Test
